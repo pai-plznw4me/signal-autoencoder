@@ -1,6 +1,52 @@
+import os
+
 import numpy as np
 import pandas as pd
 from tqdm import tqdm
+import matplotlib.pyplot as plt
+
+
+def plot_yhat_y(ys, ys_hat, names, save_dir, xs=None, show=True):
+
+    """
+     주어진 데이터의 실제 값(ys)과 예측 값(ys_hat)을 그래프로 시각화하는 함수입니다.
+
+     Parameters:
+     - ys (np.ndarray): 실제 값의 배열. Shape는 (N_data, N_col)이어야 합니다.
+     - ys_hat (np.ndarray): 예측 값의 배열. Shape는 (N_data, N_col)이어야 합니다.
+     - names (bool): 각 그래프에 대한 이름(라벨)의 리스트. 없을 경우 인덱스로 대체됩니다.
+     - save_dir (str): 그래프를 저장할 디렉토리 경로. None일 경우 저장하지 않습니다.
+     - xs (np.ndarray, optional): x 축 값의 배열. None일 경우 데이터 포인트의 인덱스를 사용합니다.
+     - show (bool, optional): 그래프를 화면에 표시할지 여부 (기본값은 True).
+
+     Returns:
+     - None
+
+     예시:
+     plot_yhat_y(ys_data, ys_hat_data, names=['Feature 1', 'Feature 2'], save_dir='./plots', xs=time_steps, show=True)
+     """
+    assert len(ys.shape) == 2, 'ys shape (N_data, N_col) 이여야 합니다. 현재 입려된 shape {}'.format(ys.shape)
+    assert len(ys_hat.shape) == 2, 'ys_hat shape (N_data, N_col) 이여야 합니다. 현재 입려된 shape {}'.format(ys_hat.shape)
+    if not xs:
+        assert len(xs.shape) == 1, '입력된 xs shape 는 N_data 이여야 합니다. 현재 입려된 shape {}'.format(xs.shape)
+        xs = np.arange(len(ys))
+    n_col = ys.shape[1]
+
+    for idx in range(n_col):
+        plt.plot(xs, ys[:, idx], label='y', alpha=0.5)
+        plt.plot(xs, ys_hat[:, idx], label='y_hat', alpha=0.5)
+        plt.legend()
+        if not names:
+            plt.title(idx)
+        if save_dir:
+            os.makedirs(save_dir, exist_ok=True)
+            save_ext = '.png'
+            save_path = os.path.join(save_dir, idx + save_ext)
+            plt.savefig(save_path)
+        if show:
+            plt.show()
+
+
 def slice_dataframe(df, interval, stride, output_type='numpy'):
     """
     주어진 DataFrame을 일정한 간격과 스트라이드에 따라 잘라주는 함수.
