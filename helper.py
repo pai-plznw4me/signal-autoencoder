@@ -6,6 +6,31 @@ from copy import copy
 from sklearn import preprocessing
 
 
+def split_dataframe_train_test(df, train_ratio=0.7):
+
+    """
+    DataFrame을 훈련(train) 및 테스트(test) 세트로 나누는 함수입니다.
+
+    Parameters:
+    - df (pd.DataFrame): 나눌 대상이 되는 DataFrame.
+    - train_ratio (float, optional): 훈련 세트의 비율을 나타내는 값 (기본값은 0.7).
+
+    Returns:
+    - pd.DataFrame, pd.DataFrame: 주어진 비율에 따라 나누어진 훈련 세트(train)와 테스트 세트(test).
+
+    예시:
+    train_df, test_df = split_dataframe_train_test(my_dataframe, train_ratio=0.8)
+    """
+
+    n_rows = len(df)
+    n_trains = int(n_rows*train_ratio)
+
+    train_df = df.iloc[:n_trains]
+    test_df = df.iloc[n_trains:]
+    return train_df, test_df
+
+
+
 def load_valid_norm_datasets_sorted_by_date(csv_path):
     """
        정렬된 날짜별로 정규화된 데이터셋을 로드하는 함수.
